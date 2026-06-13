@@ -13,20 +13,25 @@ import java.util.List;
  */
 public class Graph {
 
-    private static final int MAX_NODES = 100;
+    private final int maxNodes;
 
     private Station[]      stations;
     private List<Route>[]  adjList;
     private int            numStations;
     private int            numRoutes;
 
-    @SuppressWarnings("unchecked")
     public Graph() {
-        stations    = new Station[MAX_NODES];
-        adjList     = new ArrayList[MAX_NODES];
+        this(100); // Default capacity for backward compatibility
+    }
+
+    @SuppressWarnings("unchecked")
+    public Graph(int capacity) {
+        this.maxNodes = capacity;
+        stations    = new Station[maxNodes];
+        adjList     = new ArrayList[maxNodes];
         numStations = 0;
         numRoutes   = 0;
-        for (int i = 0; i < MAX_NODES; i++) {
+        for (int i = 0; i < maxNodes; i++) {
             adjList[i] = new ArrayList<>();
         }
     }
@@ -34,7 +39,7 @@ public class Graph {
     // ─── STATION (NODE) OPERATIONS ────────────────────────────────────────────
 
     public boolean addStation(Station s) {
-        if (s.getId() < 0 || s.getId() >= MAX_NODES) return false;
+        if (s.getId() < 0 || s.getId() >= maxNodes) return false;
         if (stations[s.getId()] != null) return false; // duplicate
         stations[s.getId()] = s;
         numStations++;
@@ -42,16 +47,16 @@ public class Graph {
     }
 
     public Station getStation(int id) {
-        if (id < 0 || id >= MAX_NODES) return null;
+        if (id < 0 || id >= maxNodes) return null;
         return stations[id];
     }
 
     public boolean removeStation(int id) {
-        if (id < 0 || id >= MAX_NODES || stations[id] == null) return false;
+        if (id < 0 || id >= maxNodes || stations[id] == null) return false;
         stations[id] = null;
         adjList[id].clear();
         // Also remove all edges pointing to this station
-        for (int i = 0; i < MAX_NODES; i++) {
+        for (int i = 0; i < maxNodes; i++) {
             if (stations[i] != null) {
                 adjList[i].removeIf(r -> r.getToId() == id);
             }
@@ -61,7 +66,7 @@ public class Graph {
     }
 
     public boolean updateStation(int id, String name, String city, String type) {
-        if (id < 0 || id >= MAX_NODES || stations[id] == null) return false;
+        if (id < 0 || id >= maxNodes || stations[id] == null) return false;
         if (name != null && !name.isEmpty()) stations[id].setName(name);
         if (city != null && !city.isEmpty()) stations[id].setCity(city);
         if (type != null && !type.isEmpty()) stations[id].setType(type);
@@ -73,15 +78,15 @@ public class Graph {
     public boolean addRoute(Route r) {
         int from = r.getFromId();
         int to   = r.getToId();
-        if (from < 0 || from >= MAX_NODES || stations[from] == null) return false;
-        if (to   < 0 || to   >= MAX_NODES || stations[to]   == null) return false;
+        if (from < 0 || from >= maxNodes || stations[from] == null) return false;
+        if (to   < 0 || to   >= maxNodes || stations[to]   == null) return false;
         adjList[from].add(r);
         numRoutes++;
         return true;
     }
 
     public boolean removeRoute(int fromId, int toId) {
-        if (fromId < 0 || fromId >= MAX_NODES || stations[fromId] == null) return false;
+        if (fromId < 0 || fromId >= maxNodes || stations[fromId] == null) return false;
         int before = adjList[fromId].size();
         adjList[fromId].removeIf(r -> r.getToId() == toId);
         int after  = adjList[fromId].size();
@@ -90,7 +95,7 @@ public class Graph {
     }
 
     public boolean updateRoute(int fromId, int toId, int newTime, int newCost) {
-        if (fromId < 0 || fromId >= MAX_NODES || stations[fromId] == null) return false;
+        if (fromId < 0 || fromId >= maxNodes || stations[fromId] == null) return false;
         for (Route r : adjList[fromId]) {
             if (r.getToId() == toId) {
                 if (newTime > 0) r.setTimeMinutes(newTime);
@@ -102,7 +107,7 @@ public class Graph {
     }
 
     public List<Route> getNeighbors(int id) {
-        if (id < 0 || id >= MAX_NODES || stations[id] == null) return new ArrayList<>();
+        if (id < 0 || id >= maxNodes || stations[id] == null) return new ArrayList<>();
         return adjList[id];
     }
 
@@ -112,7 +117,7 @@ public class Graph {
         System.out.println("\n══════════════════════════════════════════════════════════════════");
         System.out.printf("  %-4s %-25s %-20s %-6s%n", "ID", "Nama Stasiun", "Kota", "Tipe");
         System.out.println("──────────────────────────────────────────────────────────────────");
-        for (int i = 0; i < MAX_NODES; i++) {
+        for (int i = 0; i < maxNodes; i++) {
             if (stations[i] != null) {
                 System.out.printf("  %-4d %-25s %-20s %-6s%n",
                         stations[i].getId(), stations[i].getName(),
@@ -125,7 +130,7 @@ public class Graph {
 
     public void printGraph() {
         System.out.println("\n══════════════════ STRUKTUR GRAPH ══════════════════");
-        for (int i = 0; i < MAX_NODES; i++) {
+        for (int i = 0; i < maxNodes; i++) {
             if (stations[i] != null && !adjList[i].isEmpty()) {
                 System.out.printf("  [%2d] %-25s →%n", i, stations[i].getName());
                 for (Route r : adjList[i]) {
@@ -142,5 +147,5 @@ public class Graph {
 
     public int getNumStations() { return numStations; }
     public int getNumRoutes()   { return numRoutes; }
-    public int getMaxNodes()    { return MAX_NODES; }
+    public int getMaxNodes()    { return maxNodes; }
 }
