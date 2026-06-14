@@ -4,7 +4,7 @@ public class Station {
     private int id;
     private String name;
     private String city;
-    private String type;   // KRL, KA, BUS, MRT, LRT, TRANS
+    private String type;
     private double lat;
     private double lon;
 

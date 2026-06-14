@@ -2,7 +2,6 @@ package data;
 
 import java.util.ArrayList;
 import java.util.List;
-// Graph is in same package — no import needed
 
 public class RouteResult {
     private List<Integer> path;
@@ -30,7 +29,7 @@ public class RouteResult {
 
     public void print(Graph graph) {
         if (!found) {
-            System.out.println("  ✗ Tidak ada rute yang ditemukan.");
+            System.out.println("   Tidak ada rute yang ditemukan.");
             return;
         }
         System.out.println("  Path   : " + buildPathString(graph));

@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class Trie {
 
-    // ─── Inner TrieNode class ─────────────────────────────────────────────────
     private static class TrieNode {
         TrieNode[] children;
         boolean    isEnd;
@@ -30,17 +29,14 @@ public class Trie {
         }
     }
 
-    // ─── Fields ───────────────────────────────────────────────────────────────
     private TrieNode root;
     private int      count;
 
-    // ─── Constructor ──────────────────────────────────────────────────────────
     public Trie() {
         root  = new TrieNode('\0');
         count = 0;
     }
 
-    // ─── Insert ───────────────────────────────────────────────────────────────
 
     /**
      * Insert a station name with its id.
@@ -65,7 +61,6 @@ public class Trie {
         curr.stationId = stationId;
     }
 
-    // ─── Search ───────────────────────────────────────────────────────────────
 
     /**
      * Exact search — returns stationId or -1 if not found.
@@ -94,7 +89,6 @@ public class Trie {
         return findNode(prefix) != null;
     }
 
-    // ─── Delete ───────────────────────────────────────────────────────────────
 
     /**
      * Remove a station name from the trie.
@@ -130,7 +124,6 @@ public class Trie {
         return true;
     }
 
-    // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private TrieNode findNode(String prefix) {
         if (prefix == null) return null;

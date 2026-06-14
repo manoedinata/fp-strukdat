@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SRC="$SCRIPT_DIR/src"
 OUT="$SCRIPT_DIR/out"
 
-echo "🔨 Compiling..."
+echo " Compiling..."
 mkdir -p "$OUT"
 
 javac -d "$OUT" \
@@ -25,9 +25,9 @@ javac -d "$OUT" \
   "$SRC/app/DataLoader.java" \
   "$SRC/app/TransportApp.java"
 
-echo "✅ Compilation successful!"
+echo " Compilation successful!"
 echo ""
-echo "🚌 Starting Public Transport Planner..."
+echo " Starting Public Transport Planner..."
 echo ""
 
 java -cp "$OUT" app.TransportApp

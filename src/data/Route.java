@@ -6,7 +6,7 @@ public class Route {
     private int    timeMinutes;   // weight 1
     private int    costRupiah;    // weight 2
     private String lineName;      // e.g., "KRL Commuter Line Bogor"
-    private String transportType; // KRL, BUS, MRT, LRT, TRANS, KA
+    private String transportType;
 
     public Route(int fromId, int toId, int timeMinutes, int costRupiah,
                  String lineName, String transportType) {

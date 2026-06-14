@@ -13,7 +13,6 @@ package structures;
  */
 public class MinHeap {
 
-    // ─── Inner Node class ─────────────────────────────────────────────────────
     public static class HeapNode {
         public int nodeId;
         public int priority;
@@ -24,7 +23,6 @@ public class MinHeap {
         }
     }
 
-    // ─── Fields ───────────────────────────────────────────────────────────────
     private HeapNode[] data;
     private int        size;
     private int        capacity;
@@ -32,7 +30,6 @@ public class MinHeap {
     // position[nodeId] = index in heap array (-1 if not present)
     private int[]      position;
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
     public MinHeap(int capacity) {
         this.capacity = capacity;
         this.data     = new HeapNode[capacity];
@@ -41,7 +38,6 @@ public class MinHeap {
         for (int i = 0; i < capacity; i++) position[i] = -1;
     }
 
-    // ─── Core Operations ──────────────────────────────────────────────────────
 
     public boolean isEmpty() { return size == 0; }
     public int     getSize() { return size; }
@@ -97,7 +93,6 @@ public class MinHeap {
         return position[nodeId] != -1;
     }
 
-    // ─── Heap Maintenance ─────────────────────────────────────────────────────
 
     /**
      * Move element at index up until heap property is restored.
@@ -139,7 +134,6 @@ public class MinHeap {
         data[j]      = tmp;
     }
 
-    // ─── Debug ────────────────────────────────────────────────────────────────
     public void printHeap() {
         System.out.print("Heap[");
         for (int i = 0; i < size; i++) {
