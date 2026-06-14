@@ -13,7 +13,8 @@ import java.io.IOException;
  * Dataset is self-created (not from external library).
  *
  * Station attributes: id, name, city, type, lat, lon
- * Route    attributes: fromId, toId, timeMinutes, costRupiah, lineName, transportType
+ * Route attributes: fromId, toId, timeMinutes, costRupiah, lineName,
+ * transportType
  */
 public class DataLoader {
 
@@ -24,13 +25,14 @@ public class DataLoader {
 
     private static void loadStations(Graph graph, Trie trie) {
         String csvFile = "src/app/stations.csv";
+        // String csvFile = "src/app/stations_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip header line
             br.readLine();
-            
+
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(csvSplitBy);
                 if (data.length >= 6) {
@@ -53,13 +55,14 @@ public class DataLoader {
 
     private static void loadRoutes(Graph graph) {
         String csvFile = "src/app/routes.csv";
+        // String csvFile = "src/app/routes_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             // Skip header line
             br.readLine();
-            
+
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(csvSplitBy);
                 if (data.length >= 5) {
