@@ -23,20 +23,27 @@ Sebuah aplikasi konsol interaktif berbasis Java untuk merencanakan dan mensimula
 ## 📁 Struktur Direktori
 
 ```text
-src/
-├── app/
-│   ├── TransportApp.java   # Aplikasi Konsol Utama & Menu Interaktif
-│   └── DataLoader.java     # Utility untuk injeksi mock/dummy data awal
-├── algorithms/
-│   ├── BFS.java            # Logic pencarian transit terminimum
-│   └── Dijkstra.java       # Logic optimasi waktu dan biaya
+.
 ├── data/
-│   ├── Graph.java          # Representasi Graph (Stations & Routes)
-│   ├── Route.java          # Model Data Rute
-│   ├── RouteResult.java    # Model Format Hasil Rute
-│   └── Station.java        # Model Data Stasiun
-└── structures/
-    └── Trie.java           # Logika struktur data tree Trie
+│   └── dataset.csv         # File dataset simulasi (opsional)
+├── docs/
+│   ├── laporan.pdf         # Laporan utama
+│   └── tracing.pdf         # Tracing document
+├── src/
+│   ├── Main.java           # Aplikasi Konsol Utama & Menu Interaktif
+│   ├── DataLoader.java     # Utility untuk injeksi mock/dummy data awal
+│   ├── graph/              # Algoritma & Struktur Data Graph
+│   │   ├── BFS.java
+│   │   ├── Dijkstra.java
+│   │   ├── Graph.java
+│   │   └── SimpleQueue.java
+│   ├── model/              # Model data inti (Route, RouteResult, Station)
+│   │   ├── Route.java
+│   │   ├── RouteResult.java
+│   │   └── Station.java
+│   └── tree/               # Struktur Data Pohon (Trie, MinHeap)
+│       ├── MinHeap.java
+│       └── Trie.java
 ```
 
 ## 💻 Cara Menjalankan

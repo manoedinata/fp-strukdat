@@ -1,9 +1,9 @@
-package app;
 
-import data.Graph;
-import data.Route;
-import data.Station;
-import structures.Trie;
+
+import graph.Graph;
+import model.Route;
+import model.Station;
+import tree.Trie;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class DataLoader {
     }
 
     private static void loadStations(Graph graph, Trie trie) {
-        String csvFile = "src/app/stations.csv";
-        // String csvFile = "src/app/stations_jatim.csv";
+        String csvFile = "src/data/stations.csv";
+        // String csvFile = "src/data/stations_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 
@@ -54,8 +54,8 @@ public class DataLoader {
     }
 
     private static void loadRoutes(Graph graph) {
-        String csvFile = "src/app/routes.csv";
-        // String csvFile = "src/app/routes_jatim.csv";
+        String csvFile = "src/data/routes.csv";
+        // String csvFile = "src/data/routes_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 

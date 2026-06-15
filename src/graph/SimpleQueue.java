@@ -1,4 +1,4 @@
-package structures;
+package graph;
 
 /**
  * Simple FIFO Queue using circular array.

@@ -13,21 +13,21 @@ echo " Compiling..."
 mkdir -p "$OUT"
 
 javac -d "$OUT" \
-  "$SRC/data/Station.java" \
-  "$SRC/data/Route.java" \
-  "$SRC/data/RouteResult.java" \
-  "$SRC/data/Graph.java" \
-  "$SRC/structures/MinHeap.java" \
-  "$SRC/structures/SimpleQueue.java" \
-  "$SRC/structures/Trie.java" \
-  "$SRC/algorithms/Dijkstra.java" \
-  "$SRC/algorithms/BFS.java" \
-  "$SRC/app/DataLoader.java" \
-  "$SRC/app/TransportApp.java"
+  "$SRC/model/Station.java" \
+  "$SRC/model/Route.java" \
+  "$SRC/model/RouteResult.java" \
+  "$SRC/graph/Graph.java" \
+  "$SRC/tree/MinHeap.java" \
+  "$SRC/graph/SimpleQueue.java" \
+  "$SRC/tree/Trie.java" \
+  "$SRC/graph/Dijkstra.java" \
+  "$SRC/graph/BFS.java" \
+  "$SRC/DataLoader.java" \
+  "$SRC/Main.java"
 
 echo " Compilation successful!"
 echo ""
 echo " Starting Public Transport Planner..."
 echo ""
 
-java -cp "$OUT" app.TransportApp
+java -cp "$OUT" Main

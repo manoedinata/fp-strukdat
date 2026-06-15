@@ -1,9 +1,8 @@
-package algorithms;
+package graph;
 
-import data.Graph;
-import data.Route;
-import data.RouteResult;
-import structures.SimpleQueue;
+import graph.Graph;
+import model.Route;
+import model.RouteResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +14,9 @@ import java.util.List;
  * from source to destination, regardless of time or cost.
  *
  * Why BFS for minimum edges:
- *   BFS explores nodes level by level (hops from source).
- *   The first time we reach the destination, we guaranteed
- *   the minimum number of hops (transits).
+ * BFS explores nodes level by level (hops from source).
+ * The first time we reach the destination, we guaranteed
+ * the minimum number of hops (transits).
  *
  * Complexity: O(V + E)
  */
@@ -36,7 +35,7 @@ public class BFS {
         int n = graph.getMaxNodes();
 
         boolean[] visited = new boolean[n];
-        int[]     parent  = new int[n];
+        int[] parent = new int[n];
 
         for (int i = 0; i < n; i++) {
             parent[i] = -1;
@@ -61,7 +60,7 @@ public class BFS {
                 int v = r.getToId();
                 if (!visited[v]) {
                     visited[v] = true;
-                    parent[v]  = u;
+                    parent[v] = u;
                     queue.enqueue(v);
                 }
             }
@@ -84,7 +83,8 @@ public class BFS {
         while (cur != -1) {
             reversePath.add(cur);
             cur = parent[cur];
-            if (reversePath.size() > graph.getMaxNodes()) break;
+            if (reversePath.size() > graph.getMaxNodes())
+                break;
         }
 
         List<Integer> path = new ArrayList<>();
@@ -96,7 +96,7 @@ public class BFS {
         int totalTime = 0, totalCost = 0;
         for (int i = 0; i < path.size() - 1; i++) {
             int from = path.get(i);
-            int to   = path.get(i + 1);
+            int to = path.get(i + 1);
             for (Route r : graph.getNeighbors(from)) {
                 if (r.getToId() == to) {
                     totalTime += r.getTimeMinutes();

@@ -1,4 +1,4 @@
-package structures;
+package tree;
 
 /**
  * Min-Heap (Priority Queue) implemented from scratch using OOP.

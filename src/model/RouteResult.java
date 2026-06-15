@@ -1,7 +1,8 @@
-package data;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import graph.Graph;
 
 public class RouteResult {
     private List<Integer> path;

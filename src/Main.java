@@ -1,12 +1,10 @@
-package app;
-
-import algorithms.BFS;
-import algorithms.Dijkstra;
-import data.Graph;
-import data.Route;
-import data.RouteResult;
-import data.Station;
-import structures.Trie;
+import graph.BFS;
+import graph.Dijkstra;
+import graph.Graph;
+import model.Route;
+import model.RouteResult;
+import model.Station;
+import tree.Trie;
 
 import java.util.List;
 import java.util.Scanner;
@@ -26,7 +24,7 @@ import java.util.Scanner;
  *  9. Insert / Update / Delete data
  *  0. Keluar
  */
-public class TransportApp {
+public class Main {
 
     private Graph    graph;
     private Trie     trie;
@@ -34,7 +32,7 @@ public class TransportApp {
     private BFS      bfs;
     private Scanner  sc;
 
-    public TransportApp() {
+    public Main() {
         graph    = new Graph();
         trie     = new Trie();
         dijkstra = new Dijkstra(graph);
@@ -473,6 +471,6 @@ public class TransportApp {
 
 
     public static void main(String[] args) {
-        new TransportApp().run();
+        new Main().run();
     }
 }

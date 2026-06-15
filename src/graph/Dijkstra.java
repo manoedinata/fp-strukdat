@@ -1,9 +1,9 @@
-package algorithms;
+package graph;
 
-import data.Graph;
-import data.Route;
-import data.RouteResult;
-import structures.MinHeap;
+import graph.Graph;
+import model.Route;
+import model.RouteResult;
+import tree.MinHeap;
 
 import java.util.ArrayList;
 import java.util.List;
