@@ -1,5 +1,4 @@
 
-
 import graph.Graph;
 import model.Route;
 import model.Station;
@@ -24,8 +23,8 @@ public class DataLoader {
     }
 
     private static void loadStations(Graph graph, Trie trie) {
-        String csvFile = "src/data/stations.csv";
-        // String csvFile = "src/data/stations_jatim.csv";
+        String csvFile = "data/stations.csv";
+        // String csvFile = "data/stations_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 
@@ -54,8 +53,8 @@ public class DataLoader {
     }
 
     private static void loadRoutes(Graph graph) {
-        String csvFile = "src/data/routes.csv";
-        // String csvFile = "src/data/routes_jatim.csv";
+        String csvFile = "data/routes.csv";
+        // String csvFile = "data/routes_jatim.csv";
         String line = "";
         String csvSplitBy = ",";
 
