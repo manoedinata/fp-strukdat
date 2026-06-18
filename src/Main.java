@@ -4,6 +4,7 @@ import graph.Graph;
 import model.Route;
 import model.RouteResult;
 import model.Station;
+import server.ApiServer;
 import tree.Trie;
 
 import java.util.List;
@@ -13,36 +14,44 @@ import java.util.Scanner;
  * TransportApp — Main interactive console application.
  *
  * Menu:
- *  1. Cari halte/stasiun berdasarkan nama  (Trie search)
- *  2. Cari rute tercepat                   (Dijkstra - waktu)
- *  3. Cari rute termurah                   (Dijkstra - biaya)
- *  4. Cari rute transit paling sedikit     (BFS)
- *  5. Bandingkan ketiga kriteria rute      (HOTS comparison)
- *  6. Simulasikan rute yang tidak tersedia (virtual route)
- *  7. Tampilkan semua stasiun
- *  8. Tampilkan struktur graph
- *  9. Insert / Update / Delete data
- *  0. Keluar
+ * 1. Cari halte/stasiun berdasarkan nama (Trie search)
+ * 2. Cari rute tercepat (Dijkstra - waktu)
+ * 3. Cari rute termurah (Dijkstra - biaya)
+ * 4. Cari rute transit paling sedikit (BFS)
+ * 5. Bandingkan ketiga kriteria rute (HOTS comparison)
+ * 6. Simulasikan rute yang tidak tersedia (virtual route)
+ * 7. Tampilkan semua stasiun
+ * 8. Tampilkan struktur graph
+ * 9. Insert / Update / Delete data
+ * 0. Keluar
  */
 public class Main {
 
-    private Graph    graph;
-    private Trie     trie;
+    private Graph graph;
+    private Trie trie;
     private Dijkstra dijkstra;
-    private BFS      bfs;
-    private Scanner  sc;
+    private BFS bfs;
+    private Scanner sc;
 
     public Main() {
-        graph    = new Graph();
-        trie     = new Trie();
+        graph = new Graph();
+        trie = new Trie();
         dijkstra = new Dijkstra(graph);
-        bfs      = new BFS(graph);
-        sc       = new Scanner(System.in);
+        bfs = new BFS(graph);
+        sc = new Scanner(System.in);
     }
-
 
     public void run() {
         DataLoader.load(graph, trie);
+
+        // Start Web API Server for visualizations
+        try {
+            ApiServer server = new ApiServer(graph);
+            server.start(8080);
+        } catch (Exception e) {
+            System.err.println("Gagal menjalankan API Server: " + e.getMessage());
+        }
+
         printBanner();
 
         boolean running = true;
@@ -50,23 +59,43 @@ public class Main {
             printMenu();
             String choice = sc.nextLine().trim();
             switch (choice) {
-                case "1": menuSearchStation();     break;
-                case "2": menuFastestRoute();      break;
-                case "3": menuCheapestRoute();     break;
-                case "4": menuMinTransitRoute();   break;
-                case "5": menuCompareRoutes();     break;
-                case "6": menuSimulateRoute();     break;
-                case "7": graph.printAllStations();break;
-                case "8": graph.printGraph();      break;
-                case "9": menuDataManagement();    break;
-                case "0": running = false;         break;
-                default : System.out.println("   Pilihan tidak valid.\n");
+                case "1":
+                    menuSearchStation();
+                    break;
+                case "2":
+                    menuFastestRoute();
+                    break;
+                case "3":
+                    menuCheapestRoute();
+                    break;
+                case "4":
+                    menuMinTransitRoute();
+                    break;
+                case "5":
+                    menuCompareRoutes();
+                    break;
+                case "6":
+                    menuSimulateRoute();
+                    break;
+                case "7":
+                    graph.printAllStations();
+                    break;
+                case "8":
+                    graph.printGraph();
+                    break;
+                case "9":
+                    menuDataManagement();
+                    break;
+                case "0":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("   Pilihan tidak valid.\n");
             }
         }
         System.out.println("\n  Terima kasih telah menggunakan Public Transport Planner! \n");
         sc.close();
     }
-
 
     private void menuSearchStation() {
         System.out.println("\n── [1] CARI STASIUN ──────────────────────────────");
@@ -88,18 +117,19 @@ public class Main {
                 System.out.println("\n   Ditemukan " + ids.size() + " stasiun dengan awalan \"" + query + "\":");
                 for (int id : ids) {
                     Station s = graph.getStation(id);
-                    if (s != null) System.out.println("    • " + s);
+                    if (s != null)
+                        System.out.println("    • " + s);
                 }
             }
         }
         System.out.println();
     }
 
-
     private void menuFastestRoute() {
         System.out.println("\n── [2] RUTE TERCEPAT ─────────────────────────────");
         int[] ids = pickSourceDest();
-        if (ids == null) return;
+        if (ids == null)
+            return;
 
         RouteResult result = dijkstra.findShortestPath(ids[0], ids[1], Dijkstra.MODE_TIME);
         System.out.println("\n   Hasil Rute Tercepat:");
@@ -107,11 +137,11 @@ public class Main {
         System.out.println();
     }
 
-
     private void menuCheapestRoute() {
         System.out.println("\n── [3] RUTE TERMURAH ─────────────────────────────");
         int[] ids = pickSourceDest();
-        if (ids == null) return;
+        if (ids == null)
+            return;
 
         RouteResult result = dijkstra.findShortestPath(ids[0], ids[1], Dijkstra.MODE_COST);
         System.out.println("\n   Hasil Rute Termurah:");
@@ -119,11 +149,11 @@ public class Main {
         System.out.println();
     }
 
-
     private void menuMinTransitRoute() {
         System.out.println("\n── [4] RUTE TRANSIT PALING SEDIKIT ───────────────");
         int[] ids = pickSourceDest();
-        if (ids == null) return;
+        if (ids == null)
+            return;
 
         RouteResult result = bfs.findMinTransitPath(ids[0], ids[1]);
         System.out.println("\n   Hasil Rute Transit Minimum (BFS):");
@@ -131,29 +161,29 @@ public class Main {
         System.out.println();
     }
 
-
     private void menuCompareRoutes() {
         System.out.println("\n── [5] BANDINGKAN TIGA KRITERIA RUTE ─────────────");
         int[] ids = pickSourceDest();
-        if (ids == null) return;
+        if (ids == null)
+            return;
 
-        int src  = ids[0];
+        int src = ids[0];
         int dest = ids[1];
 
-        RouteResult fastest  = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_TIME);
+        RouteResult fastest = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_TIME);
         RouteResult cheapest = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_COST);
         RouteResult minTrans = bfs.findMinTransitPath(src, dest);
 
         Station s = graph.getStation(src);
         Station d = graph.getStation(dest);
         System.out.println("\n  ╔══════════════════════════════════════════════════════════╗");
-        System.out.printf ("  ║  PERBANDINGAN RUTE: %-38s║%n",
+        System.out.printf("  ║  PERBANDINGAN RUTE: %-38s║%n",
                 (s != null ? s.getName() : src) + " → " + (d != null ? d.getName() : dest));
         System.out.println("  ╠══════════════════════════════════════════════════════════╣");
 
-        printCompareRow(" Rute Tercepat",     fastest,  graph);
-        printCompareRow(" Rute Termurah",     cheapest, graph);
-        printCompareRow(" Transit Minimum",   minTrans, graph);
+        printCompareRow(" Rute Tercepat", fastest, graph);
+        printCompareRow(" Rute Termurah", cheapest, graph);
+        printCompareRow(" Transit Minimum", minTrans, graph);
 
         System.out.println("  ╠══════════════════════════════════════════════════════════╣");
         System.out.println("  ║   ANALISIS HOTS                                        ║");
@@ -174,9 +204,9 @@ public class Main {
     }
 
     private void printHotsAnalysis(RouteResult fast, RouteResult cheap, RouteResult transit) {
-        boolean sameFastCheap   = fast.isFound()  && cheap.isFound()  && fast.getPath().equals(cheap.getPath());
-        boolean sameFastTransit = fast.isFound()  && transit.isFound()&& fast.getPath().equals(transit.getPath());
-        boolean allSame         = sameFastCheap && sameFastTransit;
+        boolean sameFastCheap = fast.isFound() && cheap.isFound() && fast.getPath().equals(cheap.getPath());
+        boolean sameFastTransit = fast.isFound() && transit.isFound() && fast.getPath().equals(transit.getPath());
+        boolean allSame = sameFastCheap && sameFastTransit;
 
         if (allSame) {
             System.out.println("  ║   Ketiga kriteria menghasilkan rute yang SAMA.        ║");
@@ -196,21 +226,24 @@ public class Main {
         }
     }
 
-
     private void menuSimulateRoute() {
         System.out.println("\n── [6] SIMULASI RUTE TIDAK TERSEDIA ──────────────");
         System.out.println("  Fitur ini menambahkan rute sementara antara dua stasiun");
         System.out.println("  yang belum terhubung, lalu mencari rute terbaik.\n");
 
         int[] ids = pickSourceDest();
-        if (ids == null) return;
-        int src  = ids[0];
+        if (ids == null)
+            return;
+        int src = ids[0];
         int dest = ids[1];
 
         // Check if direct route already exists
         boolean directExists = false;
         for (Route r : graph.getNeighbors(src)) {
-            if (r.getToId() == dest) { directExists = true; break; }
+            if (r.getToId() == dest) {
+                directExists = true;
+                break;
+            }
         }
 
         if (directExists) {
@@ -229,7 +262,7 @@ public class Main {
             System.out.println("\n   Rute simulasi ditambahkan sementara.");
             System.out.println("  Mencari rute dengan simulasi...\n");
 
-            RouteResult fastest  = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_TIME);
+            RouteResult fastest = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_TIME);
             RouteResult cheapest = dijkstra.findShortestPath(src, dest, Dijkstra.MODE_COST);
             RouteResult minTrans = bfs.findMinTransitPath(src, dest);
 
@@ -246,7 +279,6 @@ public class Main {
         }
     }
 
-
     private void menuDataManagement() {
         System.out.println("\n── [9] MANAJEMEN DATA ─────────────────────────────");
         System.out.println("  a. Tambah stasiun baru");
@@ -259,13 +291,26 @@ public class Main {
         String sub = sc.nextLine().trim().toLowerCase();
 
         switch (sub) {
-            case "a": insertStation(); break;
-            case "b": insertRoute();   break;
-            case "c": updateStation(); break;
-            case "d": updateRoute();   break;
-            case "e": deleteStation(); break;
-            case "f": deleteRoute();   break;
-            default : System.out.println("   Pilihan tidak valid.");
+            case "a":
+                insertStation();
+                break;
+            case "b":
+                insertRoute();
+                break;
+            case "c":
+                updateStation();
+                break;
+            case "d":
+                updateRoute();
+                break;
+            case "e":
+                deleteStation();
+                break;
+            case "f":
+                deleteRoute();
+                break;
+            default:
+                System.out.println("   Pilihan tidak valid.");
         }
         System.out.println();
     }
@@ -275,7 +320,8 @@ public class Main {
         System.out.print("  ID baru (angka): ");
         int id = readInt(0, 99);
         if (graph.getStation(id) != null) {
-            System.out.println("   ID sudah digunakan."); return;
+            System.out.println("   ID sudah digunakan.");
+            return;
         }
         System.out.print("  Nama stasiun   : ");
         String name = sc.nextLine().trim();
@@ -296,9 +342,10 @@ public class Main {
         System.out.print("  ID stasiun asal : ");
         int from = readInt(0, 99);
         System.out.print("  ID stasiun tujuan: ");
-        int to   = readInt(0, 99);
+        int to = readInt(0, 99);
         if (graph.getStation(from) == null || graph.getStation(to) == null) {
-            System.out.println("   Stasiun tidak ditemukan."); return;
+            System.out.println("   Stasiun tidak ditemukan.");
+            return;
         }
         System.out.print("  Waktu (menit)   : ");
         int time = readInt(1, 600);
@@ -318,7 +365,8 @@ public class Main {
         System.out.print("  ID stasiun yang diupdate: ");
         int id = readInt(0, 99);
         if (graph.getStation(id) == null) {
-            System.out.println("   Stasiun tidak ditemukan."); return;
+            System.out.println("   Stasiun tidak ditemukan.");
+            return;
         }
         System.out.println("  (Biarkan kosong jika tidak diubah)");
         System.out.print("  Nama baru: ");
@@ -336,7 +384,7 @@ public class Main {
         System.out.print("  ID stasiun asal : ");
         int from = readInt(0, 99);
         System.out.print("  ID stasiun tujuan: ");
-        int to   = readInt(0, 99);
+        int to = readInt(0, 99);
         System.out.print("  Waktu baru (menit, 0=tidak berubah): ");
         int time = readInt(0, 600);
         System.out.print("  Biaya baru (Rp,   0=tidak berubah): ");
@@ -353,7 +401,10 @@ public class Main {
         System.out.print("  ID stasiun yang dihapus: ");
         int id = readInt(0, 99);
         Station s = graph.getStation(id);
-        if (s == null) { System.out.println("   Stasiun tidak ditemukan."); return; }
+        if (s == null) {
+            System.out.println("   Stasiun tidak ditemukan.");
+            return;
+        }
         trie.delete(s.getName());
         graph.removeStation(id);
         System.out.println("   Stasiun \"" + s.getName() + "\" berhasil dihapus.");
@@ -364,14 +415,13 @@ public class Main {
         System.out.print("  ID stasiun asal : ");
         int from = readInt(0, 99);
         System.out.print("  ID stasiun tujuan: ");
-        int to   = readInt(0, 99);
+        int to = readInt(0, 99);
         if (graph.removeRoute(from, to)) {
             System.out.println("   Rute berhasil dihapus.");
         } else {
             System.out.println("   Rute tidak ditemukan.");
         }
     }
-
 
     /**
      * Ask user to pick source and destination stations.
@@ -381,18 +431,27 @@ public class Main {
         System.out.println("  (Masukkan ID angka atau nama stasiun)");
         System.out.print("  Stasiun ASAL   : ");
         int src = resolveStation(sc.nextLine().trim());
-        if (src == -1) { System.out.println("   Stasiun asal tidak ditemukan.\n"); return null; }
+        if (src == -1) {
+            System.out.println("   Stasiun asal tidak ditemukan.\n");
+            return null;
+        }
 
         System.out.print("  Stasiun TUJUAN : ");
         int dest = resolveStation(sc.nextLine().trim());
-        if (dest == -1) { System.out.println("   Stasiun tujuan tidak ditemukan.\n"); return null; }
+        if (dest == -1) {
+            System.out.println("   Stasiun tujuan tidak ditemukan.\n");
+            return null;
+        }
 
-        if (src == dest) { System.out.println("   Asal dan tujuan sama.\n"); return null; }
+        if (src == dest) {
+            System.out.println("   Asal dan tujuan sama.\n");
+            return null;
+        }
 
         Station s = graph.getStation(src);
         Station d = graph.getStation(dest);
         System.out.printf("  ► %s → %s%n", s.getName(), d.getName());
-        return new int[]{src, dest};
+        return new int[] { src, dest };
     }
 
     private int resolveStation(String input) {
@@ -403,10 +462,12 @@ public class Main {
         } catch (NumberFormatException e) {
             // Try exact name search via Trie
             int id = trie.search(input);
-            if (id != -1) return id;
+            if (id != -1)
+                return id;
             // Try prefix search
             List<Integer> results = trie.searchByPrefix(input);
-            if (results.size() == 1) return results.get(0);
+            if (results.size() == 1)
+                return results.get(0);
             if (results.size() > 1) {
                 System.out.println("  Beberapa stasiun cocok:");
                 for (int rid : results) {
@@ -417,7 +478,9 @@ public class Main {
                 try {
                     int chosen = Integer.parseInt(sc.nextLine().trim());
                     return graph.getStation(chosen) != null ? chosen : -1;
-                } catch (NumberFormatException ex) { return -1; }
+                } catch (NumberFormatException ex) {
+                    return -1;
+                }
             }
             return -1;
         }
@@ -428,7 +491,8 @@ public class Main {
             try {
                 String line = sc.nextLine().trim();
                 int val = Integer.parseInt(line);
-                if (val >= min && val <= max) return val;
+                if (val >= min && val <= max)
+                    return val;
                 System.out.printf("   Masukkan angka antara %d dan %d: ", min, max);
             } catch (NumberFormatException e) {
                 System.out.print("   Input tidak valid, coba lagi: ");
@@ -436,13 +500,12 @@ public class Main {
         }
     }
 
-
     private void printBanner() {
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════════════════╗");
         System.out.println("  ║         PUBLIC TRANSPORT PLANNER                 ║");
         System.out.println("  ╠══════════════════════════════════════════════════╣");
-        System.out.printf ("  ║  Stasiun: %-5d | Rute: %-5d                    ║%n",
+        System.out.printf("  ║  Stasiun: %-5d | Rute: %-5d                    ║%n",
                 graph.getNumStations(), graph.getNumRoutes());
         System.out.println("  ║  Struktur : Graph (Adjacency List) + MinHeap     ║");
         System.out.println("  ║           : Trie untuk pencarian nama            ║");
@@ -468,7 +531,6 @@ public class Main {
         System.out.println("  └─────────────────────────────────────────────────┘");
         System.out.print("  Pilihan: ");
     }
-
 
     public static void main(String[] args) {
         new Main().run();

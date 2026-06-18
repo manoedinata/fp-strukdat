@@ -23,6 +23,7 @@ javac -d "$OUT" \
   "$SRC/graph/Dijkstra.java" \
   "$SRC/graph/BFS.java" \
   "$SRC/DataLoader.java" \
+  "$SRC/tree/ApiServer.java" \
   "$SRC/Main.java"
 
 echo " Compilation successful!"
